@@ -5,34 +5,27 @@ def get_citations_needed_count(url):
     # return page.content
     soup = BeautifulSoup(page.content , 'html.parser')
     # return soup
-    passages = soup.find_all('div',class_ = 'mw-body-content mw-content-ltr')
+    passages = soup.find_all('sup', class_ = 'noprint Inline-Template Template-Fact')
 
-    passage_List = []
-    citations = 0
-    for passage in passages:
-        find_citations = passage.find('sup' , class_ ='reference').text
-        if find_citations == "[citation needed]":
-          citations += 1
-          passage_List.append(find_citations)
-    print (passage_List)
+    return (len(passages))
 
 def get_citations_needed_report(url):
     page = requests.get(url)
     # return page.content
     soup = BeautifulSoup(page.content , 'html.parser')
     # return soup
-    passages = soup.find_all('div',class_ = 'mw-body-content mw-content-ltr')
+    passages = soup.find_all('p')
 
     p_List = []
     for passage in passages:
-        find_p =  passage.find('p' , class_ ='').text
-        find_citations = passage.find('sup' , class_ ='reference').text
-        if find_citations == "[citation needed]":
-         
-          p_List.append(find_citations)
+        find_p =  passage.find('sup' , class_ ='noprint Inline-Template Template-Fact')
+        if find_p:
+
+           p_List.append(passage.text)
         
-    print (p_List)
+    print ('\n'.join(p_List))
 
 
 url = "https://en.wikipedia.org/wiki/History_of_Mexico"
 print(get_citations_needed_count(url))
+print(get_citations_needed_report(url))
